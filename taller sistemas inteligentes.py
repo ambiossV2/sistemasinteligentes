@@ -54,8 +54,8 @@ class Puzzle:
         self.open = []
         self.closed = []
 
-
     def f(self, start, goal):
+        
         return self.h(start.data, goal)
 
     def h(self, start, goal):
@@ -66,3 +66,36 @@ class Puzzle:
                 if start[i][j] != goal[i][j] and start[i][j] != '_':
                     temp += 1
         return temp
+
+    def process(self):
+        
+        start = [[2,8,3],[1,6,4],[7,"_",5]]
+        goal = [[1,2,3],[8,"_",4],[7,6,5]]
+        start = Node(start, 0, 0)
+        start.fval = self.f(start, goal)#calcula coincidencias entre start y goal
+        # poner el nodo de inicio en la lista abierta
+        self.open.append(start)
+        print("\n\n")
+        while True:
+            cur = self.open[0]
+            print("==================================================\n")
+            for i in cur.data:
+                for j in i:
+                    print(j, end=" ")
+                print("")
+                
+            # si las coinciedncias entre el nodo actual y el objetivo es 8, hemos llegado al nodo objetivo
+            if (self.h(cur.data, goal) == 0):
+                break
+            for i in cur.generate_child():
+                i.fval = self.f(i, goal)
+                print(i.fval) #valores heuristica
+                self.open.append(i)
+            self.closed.append(cur)
+            del self.open[0]
+            # ordenamos de mayor a menor
+            self.open.sort(key=lambda x: x.fval, reverse=False)
+
+
+puz = Puzzle(3)
+puz.process()
