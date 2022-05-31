@@ -1,6 +1,18 @@
+##
+# Integrantes: Tomas Sandoval y Diego Villarroel
+
+# Problema: 8 puzzle desarrollado con el algoritmo HillClimbing, utilizando como heuristica la cantidad de diferencias 
+# entre el puzzle en estado actual y el puzzle en estado final
+# Estado Inicial (start): 2 8 3    Estado Final (goal): 1 2 3
+#                         1 6 4                         8 _ 4
+#                         7 _ 5                         7 6 5
+# ####
+
+
+
 class Node:
     def __init__(self, data, level, fval):
-        # Inicialice el nodo con los datos, el nivel del nodo y el valor calculado
+        # Inicializa el nodo con los datos, el nivel del nodo y el valor calculado
         self.data = data
         self.level = level
         self.fval = fval
@@ -31,7 +43,7 @@ class Node:
             return None
 
     def copy(self, root):
-        # función de copia para crear una matriz similar del nodo dado (hijo)
+        # Copia para crear una matriz similar del nodo dado
         temp = []
         for i in root:
             t = []
@@ -49,14 +61,13 @@ class Node:
 
 class Puzzle:
     def __init__(self, size):
-        #Inicialice el tamaño del rompecabezas por el tamaño especificado, abra y cierre las listas para vaciar
+        #Inicializa el tamaño del rompecabezas por el tamaño especificado, abre y cierra las listas open y closed
         self.n = size
         self.open = []
         self.closed = []
 
     def f(self, start, goal):
-        
-        return self.h(start.data, goal)
+        return self.h(start.data, goal) #heuristica
 
     def h(self, start, goal):
         # Calcula la diferencia entre los puzzles dados
@@ -72,7 +83,7 @@ class Puzzle:
         start = [[2,8,3],[1,6,4],[7,"_",5]]
         goal = [[1,2,3],[8,"_",4],[7,6,5]]
         start = Node(start, 0, 0)
-        start.fval = self.f(start, goal)#calcula coincidencias entre start y goal
+        start.fval = self.f(start, goal)#calcula diferencias entre start y goal
         # poner el nodo de inicio en la lista abierta
         self.open.append(start)
         print("\n\n")
@@ -84,16 +95,17 @@ class Puzzle:
                     print(j, end=" ")
                 print("")
                 
-            # si las coinciedncias entre el nodo actual y el objetivo es 8, hemos llegado al nodo objetivo
+            # si las diferencias entre el nodo actual y el objetivo es 0, hemos llegado al nodo objetivo
             if (self.h(cur.data, goal) == 0):
                 break
             for i in cur.generate_child():
                 i.fval = self.f(i, goal)
                 print(i.fval) #valores heuristica
                 self.open.append(i)
-            self.closed.append(cur)
-            del self.open[0]
-            # ordenamos de mayor a menor
+            
+            self.closed.append(cur) #nodo revisado
+            del self.open[0] #elimino el ya revisado para poder revsar el siguiente
+            # ordenamos de menor a mayor
             self.open.sort(key=lambda x: x.fval, reverse=False)
 
 
